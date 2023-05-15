@@ -1,0 +1,65 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+max_line_length = 180
+
+[*.php]
+ij_php_align_multiline_parameters_in_calls = false
+ij_php_align_multiline_array_initializer_expression = true
+ij_php_align_multiline_ternary_operation = true
+ij_php_align_key_value_pairs = true
+ij_php_align_assignments = true
+ij_php_align_class_constants = true
+ij_php_align_inline_comments = true
+ij_php_align_group_field_declarations = true
+ij_php_align_multiline_chained_methods = true
+ij_php_align_multiline_extends_list = true
+ij_php_align_multiline_for = true
+ij_php_align_multiline_parameters = true
+ij_php_align_phpdoc_comments = true
+ij_php_align_phpdoc_param_names = true
+ij_php_align_named_arguments = true
+ij_php_call_parameters_wrap = normal
+
+[*.{js,jsx}]
+indent_size = 2
+
+ij_javascript_use_double_quotes = true
+ij_javascript_imports_wrap = normal
+
+ij_javascript_import_sort_members = true
+ij_javascript_import_merge_members = true
+ij_javascript_import_sort_module_name = true
+ij_javascript_import_prefer_absolute_path = true
+ij_javascript_align_multiline_chained_methods = true
+ij_javascript_align_multiline_extends_list = true
+ij_javascript_align_object_properties = unset
+ij_javascript_object_literal_wrap = on_every_item
+ij_javascript_align_multiline_array_initializer_expression = true
+ij_javascript_align_union_types = true
+ij_javascript_align_multiline_binary_operation = true
+ij_javascript_align_multiline_parameters = true
+ij_javascript_spaces_within_object_type_braces = true
+ij_javascript_force_semicolon_style = true
+ij_javascript_use_semicolon_after_statement = false
+ij_javascript_spaces_within_object_literal_braces = true
+ij_javascript_spaces_within_imports = true
+ij_typescript_use_double_quotes = true
+ij_javascript_force_quote_style = true
+ij_javascript_align_var_statements = unset
+ij_javascript_enforce_trailing_comma = remove
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[docker-compose.yml]
+indent_size = 4
