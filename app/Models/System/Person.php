@@ -20,7 +20,6 @@ class Person extends Model
         'email',
         'birthdate',
         'employment_no',
-        //'department_id', 'grade_id'
     ];
 
     protected $casts = [

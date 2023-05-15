@@ -1,0 +1,44 @@
+/***********************************************************************************************
+Models: 
+	1. Person: id, first_name, last_name, national_code, mobile, email, birthdate, department_id, grade_id, employment_no, created_at, updated_at
+	2. Contributer: id, person_id, first_name, last_name, employment_no, started_at, finished_at, activity_type_id, created_at, updated_at
+	3. Department: id, name, created_at, updated_at
+	4. Grade: id, name, created_at, updated_at
+	5. ActivityType: id, name, created_at, updated_at
+	6. City: id, name, created_at, updated_at	
+	7. Tag: id, name, created_at, updated_at
+	8. Location: id, person_id, name, address, created_at, updated_at
+	9. Phone: id, location_id, phone_number, created_at, updated_at
+/************************************************************************************************
+1- Provide a paginated list of persons contained: 
+	- id, 
+	- first_name, 
+	- last_name, 
+	- national_code, 
+	- contribuers_count, 
+	- locations_count and tag names
+2- Save new person based on given JSON structure
+3- Update person based on given JSON structure
+4- Delete person and their contributers, locations (with phones) and tags (just assignments)
+**************************************************************************************************/
+
+{
+	"first_name": "",
+	"last_name": "",
+	"national_code": "",
+	"mobile": "",
+	"email": "",
+	"birthdate": "",
+	"department_id": "",
+	"grade_id": "",
+	"employment_no": "",
+	"contributers": [
+		{"first_name": "", "last_name": "", "employment_no": "", "started_at": "", "finished_at": "", "activity_type_id": ""}
+	],
+	"locations": [
+		{
+		"city_id": "", "name": "", "address": "", "phones": ["02155986236", "02188413677"]
+		}
+	],
+	"tags": ["", ""]
+}
