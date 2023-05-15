@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "ac27a9f5-a9b6-40bc-ba9c-8a9484ec9f1c",
+		"name": "Sample-CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "IndexPerson",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"page\": 1,\r\n    \"per_page\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhsot}}:8000/api/people/index",
+					"host": [
+						"{{localhsot}}"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"people",
+						"index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "storePerson",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"جهانگیر\",\r\n    \"last_name\": \"پورمخبر\",\r\n    \"national_code\": \"0480246000\",\r\n    \"mobile\": \"09109528679\",\r\n    \"email\": \"test26@gmail.com\",\r\n    \"birthdate\": \"1990-01-02\",\r\n    \"department_id\": \"1\",\r\n    \"grade_id\": \"1\",\r\n    \"employment_no\": 100,\r\n    \"contributors\": [\r\n        {\r\n            \"first_name\": \"سجاد\",\r\n            \"last_name\": \"حسینی\",\r\n            \"employment_no\": 120,\r\n            \"started_at\": \"\",\r\n            \"finished_at\": \"\",\r\n            \"activity_type_id\": 1\r\n        }\r\n    ],\r\n    \"locations\": [\r\n        {\r\n            \"name\": \"کرمانشاه\",\r\n            \"address\": \"کرنان اباد\",\r\n            \"phones\": [\r\n                \"02155986236\",\r\n                \"02188413677\"\r\n            ]\r\n        }\r\n    ],\r\n    \"tags\": [\r\n        \"خیریه اول\",\r\n        \"کمک هزینه تحصیلی\",\r\n        \"وام خرید مسکن\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhsot}}:8000/api/people",
+					"host": [
+						"{{localhsot}}"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatePerson",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"احمد\",\r\n    \"last_name\": \"پورمخبر\",\r\n    \"national_code\": \"0480246000\",\r\n    \"mobile\": \"09109528679\",\r\n    \"email\": \"test26@gmail.com\",\r\n    \"birthdate\": \"1990-01-02\",\r\n    \"department_id\": \"1\",\r\n    \"grade_id\": \"1\",\r\n    \"employment_no\": 100,\r\n    \"contributors\": [\r\n        {\r\n            \"first_name\": \"سجاد\",\r\n            \"last_name\": \"حسینی\",\r\n            \"employment_no\": 120,\r\n            \"started_at\": \"\",\r\n            \"finished_at\": \"\",\r\n            \"activity_type_id\": 1\r\n        }\r\n    ],\r\n    \"locations\": [\r\n        {\r\n            \"name\": \"کرمانشاه\",\r\n            \"address\": \"کرنان اباد\",\r\n            \"phones\": [\r\n                \"02155986236\",\r\n                \"02188413677\"\r\n            ]\r\n        }\r\n    ],\r\n    \"tags\": [\r\n        \"کمک هزینه تحصیلی\",\r\n        \"وام خرید مسکن\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhsot}}:8000/api/people/1",
+					"host": [
+						"{{localhsot}}"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"people",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletePerson",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhsot}}:8000/api/people/1",
+					"host": [
+						"{{localhsot}}"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"people",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

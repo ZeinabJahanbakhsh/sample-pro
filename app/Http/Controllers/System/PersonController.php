@@ -46,14 +46,6 @@ class PersonController extends Controller
     public function store(Request $request)
     {
         //$this->validationRequest($request);
-        /* $aaa = $request->collect('locations');
-        *foreach ($aaa as $val) {
-               //return $val['phones'];
-               foreach($val['phones']as $phone){
-                   echo $phone . ' - ';
-               }
-           }*/
-
 
         DB::transaction(function () use ($request) {
 
