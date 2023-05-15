@@ -99,7 +99,8 @@ class PersonController extends Controller
             $request->collect('tags')
                     ->each(fn($tagName) => array_push($tagIds, Tag::firstOrCreate(['name' => $tagName])->id));
 
-            $person->tags()->sync($tagIds);
+            $person->tags()->syncWithPivotValues($tagIds, []);
+            //$person->tags()->sync($tagIds);
         });
 
         return [
@@ -137,7 +138,6 @@ class PersonController extends Controller
             //contributors
             $request->collect('contributors')
                     ->each(fn($contributor) => $person->contributors()->update([
-                        'person_id'        => $person->id,
                         'first_name'       => $contributor['first_name'],
                         'last_name'        => $contributor['last_name'],
                         'employment_no'    => $contributor['employment_no'],
@@ -156,10 +156,7 @@ class PersonController extends Controller
                     ]));
 
             //tags
-            /* $request->collect('tags')
-                 ->each(fn($tag) => Tag::create([
-                     'name' => $tag['name'],
-                 ]));*/
+
 
         });
 
