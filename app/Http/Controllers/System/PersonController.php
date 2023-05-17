@@ -149,8 +149,8 @@ class PersonController extends Controller
                 'employment_no' => $request->input('employment_no')
             ]);
 
+
             //contributors
-            //*maybe delete all recorde next create!
             $newContributors     = $request->collect('contributors')->filter(fn(array $input) => !isset($input['id']));
             $updatedContributors = $request->collect('contributors')->filter(fn(array $input) => isset($input['id']));
 
@@ -160,59 +160,28 @@ class PersonController extends Controller
                 $person->contributors()->createMany($newContributors->toArray());
             }
 
-            //again send->update
-            $updatedContributors->each(fn(array $input) => $person->contributors()->where('id', $input['id'])->update($input)
-            );
+            $updatedContributors->each(fn(array $input) => $person->contributors()->where('id', $input['id'])->update($input));
+
 
             //locations
-            $inputLocations  = $request->collect('locations');
-            $personLocations = $person->locations();
+            $newLocations    = $request->collect('locations')->filter(fn(array $input) => !isset($input['id']));
+            $updateLocations = $request->collect('locations')->filter(fn(array $input) => isset($input['id']));
 
-            //we have id -> new records -> delete pre-records that are not in db
-            $personLocations->whereNotIn('id', $inputLocations->filter(fn($item) => isset($item['id']))
-                                                              ->pluck('id')
-                                                              ->toArray()
-            )->delete();
+            $person->locations()->whereNotIn('id', $updateLocations->pluck('id')->toArray())->delete();
 
-            /*$inputLocations->filter(fn(array $input) => !isset($input['id']))
-                                       ->whenNotEmpty(fn(Collection $items) => $personLocations
-                                           ->createMany(
-                                               $items->map(fn(array $item) => Arr::only($item,
-                                                   [
-                                                       'name',
-                                                       'address',
-                                                   ]
-                                               ))->toArray()
-                                           )
-                                       );*/
+            if ($newLocations->count() > 0) {
+                $person->locations()->createMany($newLocations->toArray());
+            }
 
-            $inputLocations->each(function ($data) use ($person) {
-                $location = $person->locations()->firstOrCreate([
-                    'name'    => $data['name'],
-                    'address' => $data['address']
-                ]);
+            $locations = $updateLocations->each(fn($input) => $person->locations()->where('id', $input['id'])->update($input));
 
-                //Can I delete all records next add new records?
+            //phones
+            $person->phones()->delete();
+            $newLocations->each(fn($input) => $updateLocations->$input['phones']);
 
-                $location->phones()->createMany(Arr::map($data['phones'], fn($phone_number) => compact('phone_number')));
 
-                /*$location->phones()->firstOrCreate([
-                    //'phone_number' => Arr::map($data['phones'], fn($phone_number) => $phone_number)
-                    //'phone_number' =>  Arr::map($data['phones'],fn($phone_number) => compact('phone_number'))
-                    'phone_number' => Arr::map($data['phones'], fn($phone_number) => compact('phone_number'))
-                    //'phone_number' => Arr::map($data['phones'], fn($phone_number) => compact('phone_number'))
-                ]);*/
-            });
+            //$location->phones()->createMany(Arr::map($data['phones'], fn($phone_number) => compact('phone_number')));
 
-            $inputLocations->filter(fn($input) => isset($input['id']))
-                           ->each(fn(array $input) => $personLocations->where('id', $input['id'])
-                                                                      ->update(Arr::only($input, [
-                                                                          'name',
-                                                                          'address',
-                                                                      ]))
-                           );
-
-            //Can I delete all records next add new records?
             /* $location->phones()->delete();
              $location->phones()->createMany(Arr::map($data['phones'], fn($phone_number) => compact('phone_number')));*/
 
@@ -228,9 +197,7 @@ class PersonController extends Controller
                     });
         });
 
-        return [
-            'message' => __('update-success')
-        ];
+        return ['message' => __('update-success')];
 
     }
 
@@ -239,7 +206,8 @@ class PersonController extends Controller
      * @param Person $person
      * @return array
      */
-    public function destroy(Person $person)
+    public
+    function destroy(Person $person)
     {
         DB::transaction(function () use ($person) {
             $person->contributors()->delete();
@@ -260,7 +228,8 @@ class PersonController extends Controller
      * @param Person|null $person
      * @return void
      */
-    private function validationRequest(Request $request, Person $person = null)
+    private
+    function validationRequest(Request $request, Person $person = null)
     {
         //$request->route()->parameters()
         //$request->method()
