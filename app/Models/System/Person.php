@@ -55,7 +55,7 @@ class Person extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'person_tag');
+        return $this->belongsToMany(Tag::class, 'person_tag')->withTimestamps();
     }
 
 }
