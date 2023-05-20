@@ -196,7 +196,7 @@ class PersonController extends Controller
         //$request->method()
 
         $this->validate($request, [
-            'email'                           => 'email', 'unique:people,email', Rule::requiredIf(empty($person) && is_null($person)),
+            'email'                           => 'email', 'unique:people,email', Rule::requiredIf(fn() => empty($person) && is_null($person)),
             //'email'                           => Rule::requiredIf(empty($person) && is_null($person)), 'email',
             //'email'                           => ['required', 'email', Rule::unique('people', 'email')->ignore($person?->id)],
             'first_name'                      => ['required', 'max:50', 'persian_alpha'],
