@@ -25,6 +25,7 @@ class Person extends Model
     protected $casts = [
         'department_id' => 'integer',
         'grade_id'      => 'integer',
+        'birthdate' => 'date'
     ];
 
 
