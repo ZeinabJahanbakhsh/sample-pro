@@ -146,14 +146,7 @@ class PersonController extends Controller
 
             if ($newContributors->count() > 0) {
                 $newContributors->each(fn($item) => $person->contributors()
-                                                           ->create(Arr::only($item, [
-                                                               'first_name',
-                                                               'last_name',
-                                                               'employment_no',
-                                                               'started_at',
-                                                               'finished_at',
-                                                               'activity_type_id'
-                                                           ])));
+                                                           ->create($item));
             }
 
 
@@ -166,22 +159,26 @@ class PersonController extends Controller
             //extraPhoneIds
             $person->phones()->whereNotIn('location_id', $updatedLocations->pluck('id'))->delete();
 
+
             $updatedLocations->each(function ($item) use ($person) {
 
                 $person->locations()->where('id', $item['id'])
                        ->update(Arr::only($item, ['name', 'address']));
 
-                $person->phones()->delete();
-
-                $locationIds = $person->locations()
+                $locationId = $person->locations()
                                       ->firstWhere('id', $item['id']);
 
-                $locationIds->phones()->createMany(
-                    Arr::map($item['phones'],
-                        fn($phone_number) => compact('phone_number'))
+                $locationId->phones()->delete();
+
+                $locationId->phones()->createMany(
+                    Arr::map(
+                        $item['phones'],
+                        fn($phone_number) => compact('phone_number')
+                    )
                 );
 
             });
+
 
             if ($newLocations->count() > 0) {
 
@@ -202,12 +199,9 @@ class PersonController extends Controller
 
             $tagIds = [];
             $request->collect('tags')->each(function ($item) use ($person, &$tagIds) {
-
                 $tagIds[] = Tag::firstOrCreate(['name' => $item])->id;
-
-                $person->tags()->sync($tagIds);
-
             });
+            $person->tags()->sync($tagIds);
 
         });
 
