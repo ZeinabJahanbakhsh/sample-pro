@@ -247,7 +247,7 @@ class PersonController extends Controller
     {
         $this->validate($request, [
             'email'                           => ['email', Rule::requiredIf(fn() => empty($person) && is_null($person)), Rule::unique('people', 'email')],
-            'first_name'                      => ['required', 'max:50', 'persian_alpha'],
+            'first_name'                      => ['required', 'max:5', 'persian_alpha'],
             'last_name'                       => ['required', 'max:50', 'persian_alpha'],
             'national_code'                   => ['required', 'ir_national_code'],
             'mobile'                          => ['nullable', 'ir_mobile'],
@@ -258,7 +258,7 @@ class PersonController extends Controller
             'contributors.*'                  => ['required', 'array'],
             'contributors.*.first_name'       => ['required', 'max:50', 'persian_alpha'],
             'contributors.*.last_name'        => ['required', 'max:50', 'persian_alpha'],
-            'contributors.*.employment_no'    => ['nullable', 'integer'],
+            'contributors.*.employment_no'    => ['nullable', 'integer', 'digits_between:1,7'],
             'contributors.*.started_at'       => ['nullable', 'date'],
             'contributors.*.finished_at'      => ['nullable', 'date'],
             'contributors.*.activity_type_id' => ['nullable', Rule::modelExists(ActivityType::class)],
@@ -267,7 +267,7 @@ class PersonController extends Controller
             'locations.*.name'                => ['nullable', 'persian_alpha'],
             'locations.*.address'             => ['nullable', 'persian_alpha'],
             'locations.*.phones.*'            => ['nullable'],
-            'tags'                            => ['required']
+            'tags'                            => ['required', 'array']
         ]);
     }
 
