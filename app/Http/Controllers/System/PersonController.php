@@ -9,6 +9,7 @@ use App\Models\Base\City;
 use App\Models\Base\Department;
 use App\Models\Base\Grade;
 use App\Models\Base\Tag;
+use App\Models\System\Location;
 use App\Models\System\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -75,12 +76,19 @@ class PersonController extends Controller
                 )));
 
             $request->collect('locations')->map(function ($item) use ($person) {
-                $location = $person->locations()->forceCreate(Arr::only($item, ['name', 'address']));
-                $location->phones()->createMany(Arr::map($item['phones'], fn($phone_number) => compact('phone_number')));
+
+                $location = $person->locations()
+                                   ->forceCreate(Arr::only($item, ['name', 'address']));
+
+                $location->phones()
+                         ->createMany(
+                             Arr::map($item['phones'], fn($phone_number) => compact('phone_number'))
+                         );
             });
 
             $tagIds = [];
             $request->collect('tags')->each(function ($item) use (&$tagIds, $person) {
+
                 $tagIds[] = Tag::firstOrCreate(['name' => $item])->id;
 
                 $person->tags()->sync($tagIds);
@@ -89,6 +97,7 @@ class PersonController extends Controller
         });
 
         return ['message' => __('store-success')];
+
     }
 
 
@@ -115,49 +124,75 @@ class PersonController extends Controller
             ]);
 
 
-            $updateContributors = $request->collect('contributors')->filter(fn($item) => isset($item['id']));
-            $newContributors    = $request->collect('contributors')->filter(fn($item) => !isset($item['id']));
+            $updatedContributors = $request->collect('contributors')->filter(fn($item) => isset($item['id']));
+            $newContributors     = $request->collect('contributors')->filter(fn($item) => !isset($item['id']));
 
-            $person->contributors()->whereNotIn('id', $updateContributors->pluck('id'))->delete();
+            $person->contributors()->whereNotIn('id', $updatedContributors->pluck('id'))->delete();
+            $updatedContributors->each(fn($item) => $person->contributors()
+                                                           ->where('id', $item['id'])
+                                                           ->update(
+                                                               Arr::only($item, [
+                                                                   'first_name',
+                                                                   'last_name',
+                                                                   'employment_no',
+                                                                   'started_at',
+                                                                   'finished_at',
+                                                                   'activity_type_id'
+                                                               ]))
+            );
 
-            $updateContributors->each(fn($item) => $person->contributors()->where('id', $item['id'])->update(Arr::only($item, [
-                'first_name',
-                'last_name',
-                'employment_no',
-                'started_at',
-                'finished_at',
-                'activity_type_id'
-            ])));
 
             if ($newContributors->count() > 0) {
-                $newContributors->each(fn($item) => $person->contributors()->create(Arr::only($item, [
-                    'first_name',
-                    'last_name',
-                    'employment_no',
-                    'started_at',
-                    'finished_at',
-                    'activity_type_id'
-                ])));
+                $newContributors->each(fn($item) => $person->contributors()
+                                                           ->create(Arr::only($item, [
+                                                               'first_name',
+                                                               'last_name',
+                                                               'employment_no',
+                                                               'started_at',
+                                                               'finished_at',
+                                                               'activity_type_id'
+                                                           ])));
             }
 
 
-            $updateLocations = $request->collect('locations')->filter(fn($item) => isset($item['id']));
-            $newLocations    = $request->collect('locations')->filter(fn($item) => !isset($item['id']));
+            $updatedLocations = $request->collect('locations')->filter(fn($item) => isset($item['id']));
+            $newLocations     = $request->collect('locations')->filter(fn($item) => !isset($item['id']));
 
             //extraLocationIds
-            $person->locations()->whereNotIn('id', $updateLocations->pluck('id'))->delete();
+            $person->locations()->whereNotIn('id', $updatedLocations->pluck('id'))->delete();
 
             //extraPhoneIds
-            $person->phones()->whereNotIn('location_id', $updateLocations->pluck('id'))->delete();
+            $person->phones()->whereNotIn('location_id', $updatedLocations->pluck('id'))->delete();
 
-            $updateLocations->each(fn($item) => $person->locations()->where('id', $item['id'])->update(Arr::only($item, ['name', 'address'])));
+            $updatedLocations->each(function ($item) use ($person) {
+
+                $person->locations()->where('id', $item['id'])
+                       ->update(Arr::only($item, ['name', 'address']));
+
+                $person->phones()->delete();
+
+                $locationIds = $person->locations()
+                                      ->firstWhere('id', $item['id']);
+
+                $locationIds->phones()->createMany(
+                                                Arr::map($item['phones'],
+                                                    fn($phone_number) => compact('phone_number'))
+                );
+
+            });
 
             if ($newLocations->count() > 0) {
-                $newLocations->map(function ($item) use ($person) {
-                    $locations = $person->locations()->forceCreate(Arr::only($item, ['name', 'address']));
 
-                    //$person->phones()->delete();
-                    $locations->phones()->createMany(Arr::map($item['phones'], fn($phone_number) => compact('phone_number')));
+                $newLocations->map(function ($item) use ($person) {
+                    $locations = $person->locations()
+                                        ->forceCreate(Arr::only($item, ['name', 'address']));
+
+                    $locations->phones()
+                              ->createMany(
+                                  Arr::map(
+                                            $item['phones'],
+                                            fn($phone_number) => compact('phone_number'))
+                              );
 
                 });
             }
@@ -165,9 +200,11 @@ class PersonController extends Controller
 
             $tagIds = [];
             $request->collect('tags')->each(function ($item) use ($person, &$tagIds) {
+
                 $tagIds[] = Tag::firstOrCreate(['name' => $item])->id;
 
                 $person->tags()->sync($tagIds);
+
             });
 
         });
@@ -202,33 +239,28 @@ class PersonController extends Controller
      */
     private function validationRequest(Request $request, Person $person = null)
     {
-        //$request->route()->parameters()
-        //$request->method()
-
         $this->validate($request, [
             'email'                           => ['email', Rule::requiredIf(fn() => empty($person) && is_null($person)), Rule::unique('people', 'email')],
-            //'email'                           => Rule::requiredIf(empty($person) && is_null($person)), 'email',
-            //'email'                           => ['required', 'email', Rule::unique('people', 'email')->ignore($person?->id)],
             'first_name'                      => ['required', 'max:50', 'persian_alpha'],
             'last_name'                       => ['required', 'max:50', 'persian_alpha'],
             'national_code'                   => ['required', 'ir_national_code'],
-            'mobile'                          => 'nullable|ir_mobile',
+            'mobile'                          => ['nullable', 'ir_mobile'],
             'birthdate'                       => ['nullable', 'date', 'before:now'],
             'department_id'                   => ['nullable', Rule::modelExists(Department::class)],
             'grade_id'                        => ['nullable', Rule::modelExists(Grade::class)],
-            'employment_no'                   => 'nullable',
-            'contributors.*'                  => 'required',
+            'employment_no'                   => ['nullable', 'digits_between:1,7'],
+            'contributors.*'                  => ['required', 'array'],
             'contributors.*.first_name'       => ['required', 'max:50', 'persian_alpha'],
             'contributors.*.last_name'        => ['required', 'max:50', 'persian_alpha'],
-            'contributors.*.employment_no'    => 'nullable', 'integer',
-            'contributors.*.started_at'       => 'nullable', 'date',
-            'contributors.*.finished_at'      => 'nullable', 'date',
+            'contributors.*.employment_no'    => ['nullable', 'integer'],
+            'contributors.*.started_at'       => ['nullable', 'date'],
+            'contributors.*.finished_at'      => ['nullable', 'date'],
             'contributors.*.activity_type_id' => ['nullable', Rule::modelExists(ActivityType::class)],
-            'locations.*'                     => 'nullable',
+            'locations.*'                     => ['required', 'array'],
             'locations.*.city_id'             => ['nullable', Rule::modelExists(City::class)],
-            'locations.*.name'                => 'nullable', 'persian_alpha',
-            'locations.*.address'             => 'nullable', 'persian_alpha',
-            'locations.*.phones.*'            => 'nullable',
+            'locations.*.name'                => ['nullable', 'persian_alpha'],
+            'locations.*.address'             => ['nullable', 'persian_alpha'],
+            'locations.*.phones.*'            => ['nullable'],
             'tags'                            => ['required']
         ]);
     }
