@@ -96,7 +96,9 @@ class PersonController extends Controller
 
         });
 
-        return ['message' => __('store-success')];
+        return [
+            'message' => __('messages.store-success')
+        ];
 
     }
 
@@ -175,8 +177,8 @@ class PersonController extends Controller
                                       ->firstWhere('id', $item['id']);
 
                 $locationIds->phones()->createMany(
-                                                Arr::map($item['phones'],
-                                                    fn($phone_number) => compact('phone_number'))
+                    Arr::map($item['phones'],
+                        fn($phone_number) => compact('phone_number'))
                 );
 
             });
@@ -190,8 +192,8 @@ class PersonController extends Controller
                     $locations->phones()
                               ->createMany(
                                   Arr::map(
-                                            $item['phones'],
-                                            fn($phone_number) => compact('phone_number'))
+                                      $item['phones'],
+                                      fn($phone_number) => compact('phone_number'))
                               );
 
                 });
@@ -209,7 +211,9 @@ class PersonController extends Controller
 
         });
 
-        return ['massage' => __('update-success')];
+        return [
+            'message' => __('messages.update-success')
+        ];
 
     }
 
@@ -228,7 +232,9 @@ class PersonController extends Controller
             $person->delete();
         });
 
-        return ['message' => __('destroy-success')];
+        return [
+            'message' => __('messages.destroy-success')
+        ];
     }
 
 
