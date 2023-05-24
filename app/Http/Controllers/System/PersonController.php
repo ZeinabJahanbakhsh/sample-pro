@@ -9,7 +9,6 @@ use App\Models\Base\City;
 use App\Models\Base\Department;
 use App\Models\Base\Grade;
 use App\Models\Base\Tag;
-use App\Models\System\Location;
 use App\Models\System\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
