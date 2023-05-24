@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\System\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +24,14 @@ Route::controller(PersonController::class)->prefix('people')->group(function () 
     Route::put('{person}', 'update');
     Route::delete('{person}', 'destroy');
 });
+
+
+Route::controller(TestController::class)
+     ->prefix('test/people')
+     ->group(
+         function () {
+             Route::post('index', 'index');
+             Route::post('/', 'store');
+             Route::put('{person}', 'update');
+             Route::delete('{person}', 'destroy');
+         });

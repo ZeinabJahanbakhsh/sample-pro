@@ -48,7 +48,7 @@ class PersonController extends Controller
      * @param Request $request
      * @return array
      */
-    public function store(Request $request)
+    public function store1(Request $request)
     {
         $this->validationRequest($request);
 
@@ -267,5 +267,69 @@ class PersonController extends Controller
             'tags'                            => ['required', 'array']
         ]);
     }
+
+
+
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+    /*********************************************03/03/1402******************************************************/
+    public function store(Request $request)
+    {
+        $this->validationRequest($request);
+
+        DB::transaction(function () use ($request) {
+
+            $person = Person::forceCreate([
+                'first_name'    => $request->input('first_name'),
+                'last_name'     => $request->input('last_name'),
+                'national_code' => $request->input('national_code'),
+                'email'         => $request->input('email'),
+                'birthdate'     => $request->input('birthdate'),
+                'mobile'        => $request->input('mobile'),
+                'employment_no' => $request->input('employment_no'),
+                'grade_id'      => $request->input('grade_id'),
+                'department_id' => $request->input('department_id'),
+            ]);
+
+            $person->contributors()->createMany(
+                $request->collect('contributors')
+                        ->each(fn($item) => Arr::only($item, [
+                            'first_name',
+                            'last_name',
+                            'employment_no',
+                            'started_at',
+                            'finished_at',
+                            'activity_type_id'
+                        ]))
+            );
+
+            $request->collect('locations')->each(function ($item) use ($person) {
+                $location = $person->locations()->forceCreate([
+                    'name'    => $item['name'],
+                    'address' => $item['address'],
+                ]);
+
+                $location->phones()->createMany(
+                    Arr::map($item['phones'], fn($phone_number) => compact('phone_number'))
+                );
+            });
+
+            $tagIds = [];
+            $request->collect('tags')->each(function($item) use(&$tagIds, $person) {
+                $tagIds[] = Tag::firstOrCreate([
+                    'name' => $item
+                ])->id;
+                //pluck('id)->wrong
+            });
+            $person->tags()->sync($tagIds);
+
+        });
+
+        return [
+            'messages' => __('messages.store-success')
+        ];
+
+    }
+
 
 }
