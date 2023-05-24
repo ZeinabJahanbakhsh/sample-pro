@@ -22,13 +22,13 @@ class PersonResource extends JsonResource
     public function toArray($request): array|JsonSerializable|Arrayable
     {
         return [
-            'id'                => $this->id,
-            'first_name'        => $this->first_name,
-            'last_name'         => $this->last_name,
-            'national_code'     => $this->national_code,
+            'id'                 => $this->id,
+            'first_name'         => $this->first_name,
+            'last_name'          => $this->last_name,
+            'national_code'      => $this->national_code,
             'contributors_count' => count($this->contributors),
-            'locations_count'   => count($this->locations),
-            //'tag_names' => $this->tags()
+            'locations_count'    => count($this->locations),
+            'tag_names'          => $this->tags->map(fn($tag) => $tag['name']),
         ];
     }
 
