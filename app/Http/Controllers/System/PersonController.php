@@ -29,7 +29,11 @@ class PersonController extends Controller
             'per_page' => $perPage,
         ] = $request->all();
 
-        $person = Person::with(['department', 'contributors'])->paginate(
+        $person = Person::with([
+            'contributors',
+            'locations',
+            'tags'
+        ])->paginate(
             $perPage ?? 10,
             ['*'],
             'page',
