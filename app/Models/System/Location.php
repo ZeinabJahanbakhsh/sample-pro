@@ -16,6 +16,10 @@ class Location extends Model
         'person_id' => 'integer',
     ];
 
+
+    /******************************************* Relations *******************************************/
+
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

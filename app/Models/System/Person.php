@@ -29,6 +29,9 @@ class Person extends Model
     ];
 
 
+    /******************************************* Relations *******************************************/
+
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Person::class);

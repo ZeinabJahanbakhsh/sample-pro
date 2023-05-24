@@ -15,6 +15,10 @@ class Phone extends Model
         'location_id' => 'integer',
     ];
 
+
+    /******************************************* Relations *******************************************/
+
+
     public function location(): BelongsToMany
     {
         return $this->belongsToMany(Location::class);

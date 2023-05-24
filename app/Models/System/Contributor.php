@@ -23,6 +23,10 @@ class Contributor extends Model
         'finished_at'      => 'datetime',
     ];
 
+
+    /******************************************* Relations *******************************************/
+
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
