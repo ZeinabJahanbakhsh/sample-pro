@@ -108,7 +108,7 @@ class PersonController extends Controller
      * @param Person  $person
      * @return array
      */
-    public function update1(Request $request, Person $person)
+    public function update(Request $request, Person $person)
     {
         $this->validationRequest($request, $person);
 
