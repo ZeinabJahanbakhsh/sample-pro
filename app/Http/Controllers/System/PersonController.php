@@ -166,7 +166,7 @@ class PersonController extends Controller
                        ->update(Arr::only($item, ['name', 'address']));
 
                 $locationId = $person->locations()
-                                     ->firstWhere('id', $item['id']);
+                                      ->firstWhere('id', $item['id']);
 
                 $locationId->phones()->delete();
 
@@ -211,74 +211,6 @@ class PersonController extends Controller
 
     }
 
-
-    public function update(Request $request, Person $person)
-    {
-        $this->validationRequest($request, $person);
-
-        DB::transaction(function () use ($person, $request) {
-
-            //person
-            $person->update([
-                'first_name'    => $request->input('first_name'),
-                'last_name'     => $request->input('last_name'),
-                'national_code' => $request->input('national_code'),
-                'mobile'        => $request->input('mobile'),
-                'birthdate'     => $request->date('birthdate'),
-                'department_id' => $request->input('department_id'),
-                'grade_id'      => $request->input('grade_id'),
-                'employment_no' => $request->input('employment_no'),
-            ]);
-
-
-            //*contributors
-            $updatedContributors = $request->collect('contributors')->filter(fn($item) => isset($item['id']));
-            $newContributors     = $request->collect('contributors')->filter(fn($item) => !isset($item['id']));
-
-            //those ids didn't come with new request->delete from db
-            $person->contributors()->whereNotIn('id', $updatedContributors->pluck('id'))->delete();
-
-            //update
-            $updatedContributors->each(fn($item) => $person->contributors()
-                                                           ->where('id', $item['id'])
-                                                           ->update(Arr::only($item, [
-                                                               'first_name',
-                                                               'last_name',
-                                                               'employment_no',
-                                                               'started_at',
-                                                               'finished_at',
-                                                               'activity_type_id'
-                                                           ])
-                                                           ));
-
-            //new
-            if ($newContributors->count() > 0) {
-                $newContributors->each(fn($item) => $person->contributors()
-                                                           ->forceCreate(Arr::only($item, [
-                                                                   'first_name',
-                                                                   'last_name',
-                                                                   'employment_no',
-                                                                   'started_at',
-                                                                   'finished_at',
-                                                                   'activity_type_id'
-                                                               ]
-                                                           ))
-                );
-            }
-
-
-            //locations
-            $updatedLocations = $request->collect('locations')->filter(fn($item) => isset($item['id']));
-            $newLocations = $request->collect('locations')->filter(fn($item) => !isset($item['id']));
-
-
-        });
-
-        return [
-            'message' => __('messages.update-success')
-        ];
-
-    }
 
     /**
      * @param Person $person
