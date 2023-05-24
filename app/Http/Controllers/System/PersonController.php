@@ -169,7 +169,7 @@ class PersonController extends Controller
                        ->update(Arr::only($item, ['name', 'address']));
 
                 $locationId = $person->locations()
-                                      ->firstWhere('id', $item['id']);
+                                     ->firstWhere('id', $item['id']);
 
                 $locationId->phones()->delete();
 
@@ -244,7 +244,7 @@ class PersonController extends Controller
     {
         $this->validate($request, [
             'email'                           => ['email', Rule::requiredIf(fn() => empty($person) && is_null($person)), Rule::unique('people', 'email')],
-            'first_name'                      => ['required', 'max:5', 'persian_alpha'],
+            'first_name'                      => ['required', 'max:50', 'persian_alpha'],
             'last_name'                       => ['required', 'max:50', 'persian_alpha'],
             'national_code'                   => ['required', 'ir_national_code'],
             'mobile'                          => ['nullable', 'ir_mobile'],
