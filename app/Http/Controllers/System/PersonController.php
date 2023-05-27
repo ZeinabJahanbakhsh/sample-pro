@@ -48,7 +48,7 @@ class PersonController extends Controller
      * @param Request $request
      * @return array
      */
-    public function store1(Request $request)
+    public function store(Request $request)
     {
         $this->validationRequest($request);
 
@@ -76,7 +76,8 @@ class PersonController extends Controller
                         'finished_at',
                         'activity_type_id'
                     ]
-                )));
+                ))
+            );
 
             $request->collect('locations')->map(function ($item) use ($person) {
 
@@ -93,9 +94,9 @@ class PersonController extends Controller
             $request->collect('tags')->each(function ($item) use (&$tagIds, $person) {
 
                 $tagIds[] = Tag::firstOrCreate(['name' => $item])->id;
-
-                $person->tags()->sync($tagIds);
             });
+
+            $person->tags()->sync($tagIds);
 
         });
 
@@ -273,7 +274,7 @@ class PersonController extends Controller
     /***************************************************************************************************/
     /***************************************************************************************************/
     /*********************************************03/03/1402******************************************************/
-    public function store(Request $request)
+    public function store2(Request $request)
     {
         $this->validationRequest($request);
 
@@ -315,7 +316,7 @@ class PersonController extends Controller
             });
 
             $tagIds = [];
-            $request->collect('tags')->each(function($item) use(&$tagIds, $person) {
+            $request->collect('tags')->each(function ($item) use (&$tagIds, $person) {
                 $tagIds[] = Tag::firstOrCreate([
                     'name' => $item
                 ])->id;

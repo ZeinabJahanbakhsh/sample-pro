@@ -12,10 +12,10 @@ use BasicCrud\Http\Actions\HasUpdateAction;
 
 class TagController extends Controller
 {
-    use HasIndexAction;
+    //use HasIndexAction;
     use HasStoreAction;
-    use HasUpdateAction;
-    use HasListAction;
+    //use HasUpdateAction;
+    //use HasListAction;
 
     public $model = Tag::class;
 

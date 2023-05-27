@@ -9,6 +9,7 @@ return [
     'required'       => ':attribute  اجباری است',
     'unique'         => ':attribute  قبلا انتخاب شده است',
     'exists'         => ':attribute  معتبر انتخاب کنید',
+    'email'          => ':attribute  معتبر انتخاب کنید',
 
 
     'custom' => [

@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\System\TestController;
-use Illuminate\Http\Request;
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-use App\Http\Controllers\System\PersonController;
 
-Route::controller(PersonController::class)->prefix('people')->group(function () {
+Route::controller(App\Http\Controllers\System\PersonController::class)->prefix('people')->group(function () {
     Route::post('index', 'index');
     Route::post('/', 'store');
     Route::put('{person}', 'update');
@@ -26,12 +25,7 @@ Route::controller(PersonController::class)->prefix('people')->group(function () 
 });
 
 
-Route::controller(TestController::class)
-     ->prefix('test/people')
-     ->group(
-         function () {
-             Route::post('index', 'index');
-             Route::post('/', 'store');
-             Route::put('{person}', 'update');
-             Route::delete('{person}', 'destroy');
-         });
+BasicCrudRoutes::prefix('tags')->controller(App\Http\Controllers\Base\TagController::class)->register();
+
+
+
