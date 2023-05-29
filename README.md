@@ -72,14 +72,14 @@
             "finished_at": "",
             "activity_type_id": "
         },
-		{
+        {
             "id": "",
             "first_name": "",
             "last_name": "",
             "employment_no": "",
             "started_at": "",
             "finished_at": "",
-            "activity_type_id": "
+            "activity_type_id": ""
         }
 		
     ],
@@ -92,7 +92,7 @@
                 ""
             ]
         },
-		{
+        {
             "id":"",
             "name": "",
             "address": "",
@@ -108,4 +108,3 @@
     ]
 }
 ```
-
